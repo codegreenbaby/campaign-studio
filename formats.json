@@ -1,0 +1,165 @@
+{
+  "naming": "{CODE}_{W}x{H}_{KIND}_{LANG}_v{N} - {PLATFORM}",
+  "label": "label - {CODE}_{W}x{H}_{KIND}_{LANG}_v{N}",
+  "kinds": [
+    "Static",
+    "Video"
+  ],
+  "video": {
+    "seconds": 6,
+    "fps": 30,
+    "codec": "h264",
+    "pix_fmt": "yuv420p",
+    "lastFrame": "equals static"
+  },
+  "langs": [
+    "en",
+    "de",
+    "ar",
+    "it",
+    "zh-hans",
+    "vi",
+    "es",
+    "ms",
+    "pt",
+    "tr",
+    "ja"
+  ],
+  "langLabel": {
+    "en": "EN",
+    "de": "DE",
+    "ar": "AR",
+    "it": "IT",
+    "zh-hans": "ZH-HANS",
+    "vi": "VI",
+    "es": "ES",
+    "ms": "MS",
+    "pt": "PT-BR",
+    "tr": "TR",
+    "ja": "JA"
+  },
+  "rtl": [
+    "ar"
+  ],
+  "formats": [
+    {
+      "w": 1080,
+      "h": 1080,
+      "platform": "Meta",
+      "layout": "block",
+      "slots": [
+        "logo",
+        "badge",
+        "headline",
+        "sub",
+        "price",
+        "code",
+        "cta",
+        "disclaimer"
+      ]
+    },
+    {
+      "w": 1080,
+      "h": 1350,
+      "platform": "Meta",
+      "layout": "block",
+      "slots": [
+        "logo",
+        "badge",
+        "headline",
+        "sub",
+        "price",
+        "code",
+        "cta",
+        "chip",
+        "disclaimer"
+      ],
+      "vars": {
+        "hs": "96",
+        "ps": "150",
+        "gap": "38",
+        "lh": "96"
+      }
+    },
+    {
+      "w": 1080,
+      "h": 1920,
+      "platform": "Meta",
+      "layout": "vertical",
+      "slots": [
+        "logo",
+        "badge",
+        "headline",
+        "sub",
+        "price",
+        "code",
+        "cta",
+        "chip",
+        "disclaimer"
+      ],
+      "safe": {
+        "top": 0.14,
+        "bottom": 0.2,
+        "note": "[VERIFY] Meta Stories/Reels safe zones"
+      }
+    },
+    {
+      "w": 1200,
+      "h": 1200,
+      "platform": "PMax",
+      "layout": "block",
+      "slots": [
+        "logo",
+        "badge",
+        "headline",
+        "sub",
+        "price",
+        "code",
+        "cta",
+        "disclaimer"
+      ]
+    },
+    {
+      "w": 960,
+      "h": 1200,
+      "platform": "PMax",
+      "layout": "block",
+      "slots": [
+        "logo",
+        "badge",
+        "headline",
+        "sub",
+        "price",
+        "code",
+        "cta",
+        "chip",
+        "disclaimer"
+      ],
+      "vars": {
+        "hs": "96",
+        "ps": "150",
+        "gap": "38",
+        "lh": "96"
+      }
+    },
+    {
+      "w": 1200,
+      "h": 628,
+      "platform": "PMax",
+      "layout": "wide",
+      "slots": [
+        "logo",
+        "headline",
+        "price",
+        "code",
+        "cta",
+        "disclaimerShort"
+      ]
+    }
+  ],
+  "board": {
+    "order": "rows = langs, columns = formats in the order above",
+    "gap": 120,
+    "rowGap": 240
+  }
+}

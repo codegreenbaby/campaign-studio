@@ -1,0 +1,26 @@
+# environment
+.venv/
+__pycache__/
+*.pyc
+
+# local only: tokens, Figma ids, machine and client instructions
+secrets/
+state/
+CLAUDE.local.md
+
+# campaign content and client data stay on the machine that made them
+campaigns/*
+!campaigns/README.md
+brand/*
+!brand/README.md
+glossary/*
+!glossary/README.md
+
+# skills: only the three that belong to this project are shipped;
+# third-party and client skills are installed locally (see README)
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/campaign-build/
+!.claude/skills/localize/
+!.claude/skills/figma-comments-loop/

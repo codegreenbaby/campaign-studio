@@ -1,0 +1,463 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>banner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=block" rel="stylesheet">
+<!--CFG-->
+<style>
+  /* default theme; a campaign overrides any token through campaign.json "theme" */
+  :root {
+    --ink: #111827; --bg: #07060B; --accent: #A761FF; --accent-deep: #671DDB; --accent-soft: #C5A8F3;
+    --accent-2: #3AE7A7; --soft: #D1D5DB; --muted: #9CA3AF; --white: #FFFFFF;
+    --font: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  html[lang="ar"] { --font: "Noto Sans Arabic", "Poppins", sans-serif; }
+  html[lang="zh-hans"] { --font: "Noto Sans SC", "Poppins", sans-serif; }
+  html[lang="ja"] { --font: "Noto Sans JP", "Poppins", sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: var(--W); height: var(--H); overflow: hidden; background: var(--bg); }
+  body { font-family: var(--font); color: var(--white); -webkit-font-smoothing: antialiased; }
+  .u { --x: calc(var(--u) * 1px); }
+
+  #frame { position: relative; width: var(--W); height: var(--H); overflow: hidden; background: var(--bg); }
+  #bg { position: absolute; inset: -2%; background-size: cover; background-position: var(--bgpos, 60% 50%); will-change: transform, opacity; }
+  #shade { position: absolute; inset: 0; pointer-events: none; }
+  .layer { position: absolute; }
+
+  /* text system, sizes in --x (1 design px at the 1080 base) */
+  .logo { display: block; height: calc(var(--x) * var(--lh, 88)); width: auto; }
+  .badge { display: inline-flex; align-items: center; height: calc(var(--x) * 44); padding: 0 calc(var(--x) * 18);
+    border-radius: 999px; font-size: calc(var(--x) * 20); font-weight: 600; letter-spacing: 0.12em;
+    color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: inset 0 0 0 calc(var(--x) * 1.5) color-mix(in srgb, var(--accent) 45%, transparent); white-space: nowrap; }
+  .headline { font-weight: 700; font-size: calc(var(--x) * var(--hs, 92)); line-height: 1.04; letter-spacing: -0.025em; }
+  .headline span { display: block; white-space: nowrap; }
+  .headline .h2 { color: var(--accent); }
+  .sub { font-size: calc(var(--x) * 30); line-height: 1.4; color: var(--soft); max-width: calc(var(--x) * 600); text-wrap: pretty; }
+  .disc { text-wrap: pretty; }
+  .price { display: flex; align-items: flex-end; gap: calc(var(--x) * 28); }
+  .price .from { font-size: calc(var(--x) * 24); font-weight: 500; color: var(--muted); letter-spacing: 0.02em; display: block; margin-bottom: calc(var(--x) * 2); }
+  .price .val { font-size: calc(var(--x) * var(--ps, 128)); font-weight: 700; line-height: 0.92; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .price .lev { font-size: calc(var(--x) * 28); line-height: 1.25; color: var(--soft); padding-bottom: calc(var(--x) * 10);
+    padding-inline-start: calc(var(--x) * 28); border-inline-start: calc(var(--x) * 1.5) solid rgba(255,255,255,0.18); max-width: calc(var(--x) * 240); }
+  .price .lev b { color: var(--white); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .row { display: flex; align-items: center; gap: calc(var(--x) * 18); flex-wrap: nowrap; }
+  .code { display: inline-flex; align-items: center; gap: calc(var(--x) * 12); height: calc(var(--x) * 76); padding: 0 calc(var(--x) * 22);
+    border-radius: 999px; border: calc(var(--x) * 2) dashed color-mix(in srgb, var(--accent-soft) 55%, transparent); white-space: nowrap; background: rgba(7, 6, 11, 0.55); }
+  .code .k { font-size: calc(var(--x) * 18); letter-spacing: 0.16em; color: var(--muted); font-weight: 600; }
+  .code .v { font-size: calc(var(--x) * 28); font-weight: 700; letter-spacing: 0.04em; }
+  .code .off { font-size: calc(var(--x) * 22); font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .cta { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: calc(var(--x) * 16); height: calc(var(--x) * 76);
+    padding-inline: calc(var(--x) * 32) calc(var(--x) * 10); border-radius: 999px; background: var(--accent); color: var(--ink);
+    font-size: calc(var(--x) * 28); font-weight: 600; white-space: nowrap; }
+  .cta .ic { width: calc(var(--x) * 56); height: calc(var(--x) * 56); border-radius: 999px; background: var(--ink); color: var(--white);
+    display: grid; place-items: center; font-size: calc(var(--x) * 28); }
+  html[dir="rtl"] .cta .ic { transform: scaleX(-1); }
+  .cta .shine { position: absolute; top: 0; bottom: 0; width: 40%; left: 0;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent); transform: translateX(-150%); }
+  .chip { font-size: calc(var(--x) * 22); color: var(--soft); white-space: nowrap; }
+  .chip b { color: var(--accent-2); font-weight: 600; }
+  .disc { font-size: calc(var(--x) * var(--ds, 17)); line-height: 1.45; color: rgba(209, 213, 219, 0.66); }
+
+  #candles svg { width: 100%; height: auto; display: block; overflow: visible; }
+  /* brief: the brand logo sits top-left in every language, RTL included (flex-end is the left edge in RTL) */
+  html[dir="rtl"] .logoRow { align-self: flex-end; }
+  #rocketWrap { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+  #rocket { position: absolute; width: calc(var(--x) * var(--rs, 190)); left: 0; top: 0; transform-origin: 0 0; }
+  /* the anchor (0,0) is the rocket's centre line; the image is centred on it vertically
+     (translateY, because the anchor box has no height for a top:% to work against) */
+  #rocket img { position: absolute; width: 100%; left: -62%; top: 0; transform: translateY(-50%); }
+  #flame { position: absolute; height: calc(var(--x) * var(--fh, 26)); right: 100%; top: calc(var(--x) * var(--fh, 26) * -0.5);
+    margin-right: calc(var(--x) * var(--rs, 190) * 0.385); transform-origin: 100% 50%;
+    clip-path: polygon(0 50%, 100% 8%, 100% 92%);
+    background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent-2) 60%, transparent) 40%, color-mix(in srgb, var(--accent) 95%, transparent) 80%, #F3EEFF 100%); }
+  #trail { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  .speed { stroke: rgba(233, 226, 247, 0.75); stroke-linecap: round; fill: none; }
+
+  /* layout: block (1:1, 4:5) */
+  .L-block .stack { position: absolute; left: calc(var(--x) * 72); top: calc(var(--x) * 72); right: calc(var(--x) * 72); bottom: calc(var(--x) * 72);
+    display: flex; flex-direction: column; }
+  .L-block .stack > * + * { margin-top: calc(var(--x) * var(--gap, 28)); }
+  .L-block .logoRow { margin-bottom: calc(var(--x) * 40); }
+  .L-block .spacer { flex: 1 1 auto; min-height: calc(var(--x) * 16); }
+  .L-block #candles { position: absolute; width: calc(var(--x) * var(--cw, 380)); right: calc(var(--x) * 40); }
+
+  /* layout: vertical (9:16), content inside the safe area */
+  .L-vertical .stack { position: absolute; left: calc(var(--x) * 72); right: calc(var(--x) * 72); display: flex; flex-direction: column; }
+  .L-vertical .stack > * + * { margin-top: calc(var(--x) * var(--gap, 28)); }
+  .L-vertical { --hs: 112; --ps: 150; --gap: 30; }
+  .L-vertical .band { display: flex; align-items: flex-end; justify-content: space-between; gap: calc(var(--x) * 32); }
+  .L-vertical .band .left { flex: none; }
+  .L-vertical .band .left > * + * { margin-top: calc(var(--x) * 30); }
+  .L-vertical .band .price { flex-direction: column; align-items: flex-start; gap: calc(var(--x) * 14); }
+  .L-vertical .band .price .lev { border: 0; padding: 0; }
+  .L-vertical #candles { position: relative; flex: none; margin-bottom: calc(var(--x) * 6); }
+  .L-block { --hs: 80; }
+  .L-vertical .spacer { flex: 1 1 auto; min-height: calc(var(--x) * 20); }
+  .L-vertical .sub { font-size: calc(var(--x) * 34); max-width: calc(var(--x) * 760); }
+  .L-vertical .price .lev { font-size: calc(var(--x) * 32); max-width: none; }
+  .L-vertical .chip { font-size: calc(var(--x) * 26); }
+  .L-vertical .code { height: calc(var(--x) * 84); }
+  .L-vertical .code .v { font-size: calc(var(--x) * 32); }
+  .L-vertical .code .off { font-size: calc(var(--x) * 26); }
+  .L-vertical .disc { font-size: calc(var(--x) * 19); }
+  .L-vertical .cta { height: calc(var(--x) * 92); font-size: calc(var(--x) * 32); justify-content: space-between; }
+  .L-vertical .cta .ic { width: calc(var(--x) * 70); height: calc(var(--x) * 70); }
+  .L-vertical .spacer { flex: 1 1 auto; }
+
+  /* layout: wide (1.91:1) */
+  .L-wide { --hs: 58; --ps: 80; --gap: 16; --lh: 58; --ds: 14; }
+  .L-wide .stack { position: absolute; left: calc(var(--x) * 52); top: calc(var(--x) * 40); bottom: calc(var(--x) * 28); width: calc(var(--x) * 700);
+    display: flex; flex-direction: column; }
+  .L-wide .stack > * + * { margin-top: calc(var(--x) * var(--gap)); }
+  .L-wide .logoRow { margin-bottom: calc(var(--x) * 12); }
+  .L-wide .price .from { font-size: calc(var(--x) * 18); }
+  .L-wide .price .lev { font-size: calc(var(--x) * 22); padding-bottom: calc(var(--x) * 6); }
+  .L-wide .code, .L-wide .cta { height: calc(var(--x) * 58); }
+  .L-wide .code .v { font-size: calc(var(--x) * 22); }
+  .L-wide .code .k { font-size: calc(var(--x) * 14); }
+  .L-wide .code .off, .L-wide .cta { font-size: calc(var(--x) * 20); }
+  .L-wide .cta .ic { width: calc(var(--x) * 44); height: calc(var(--x) * 44); font-size: calc(var(--x) * 22); }
+  .L-wide .disc { white-space: nowrap; }
+  .L-wide .spacer { flex: 1 1 auto; }
+  .L-wide .row { gap: calc(var(--x) * 14); }
+  .L-wide #candles { position: absolute; width: calc(var(--x) * var(--cw, 330)); right: calc(var(--x) * 56); bottom: calc(var(--x) * 52); }
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="bg"></div>
+  <div id="shade"></div>
+  <svg id="trail"></svg>
+  <div id="candles" class="layer"></div>
+  <div id="content"></div>
+  <div id="rocketWrap"><div id="rocket"><div id="flame"></div><img alt=""></div></div>
+</div>
+<script>
+(function () {
+  const C = window.CFG;
+  const W = C.w, H = C.h, T = C.seconds || 6;
+  const root = document.documentElement;
+  root.lang = C.lang; root.dir = C.dir || "ltr";
+  // 1 design unit = 1px at the 1080 base; wide uses a 1200 base.
+  const base = C.layout === "wide" ? 1200 : 1080;
+  const u = W / base;
+  root.style.setProperty("--W", W + "px"); root.style.setProperty("--H", H + "px");
+  root.style.setProperty("--u", u);
+  document.body.classList.add("u", "L-" + C.layout);
+  const X = (n) => n * u;
+  const tx = C.text, A = C.assets, slots = new Set(C.slots);
+  const shortUsed = new Set();
+  const txt = (k) => (shortUsed.has(k.split(".")[0]) && tx[k + ".short"]) ? tx[k + ".short"] : tx[k];
+
+  // ---------- easing (cubic-bezier solver) ----------
+  function bez(x1, y1, x2, y2) {
+    const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
+    const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    const sx = (t) => ((ax * t + bx) * t + cx) * t, sy = (t) => ((ay * t + by) * t + cy) * t;
+    const dx = (t) => (3 * ax * t + 2 * bx) * t + cx;
+    return (x) => {
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      let t = x;
+      for (let i = 0; i < 8; i++) { const e = sx(t) - x, d = dx(t); if (Math.abs(e) < 1e-6 || !d) break; t -= e / d; }
+      return sy(Math.min(1, Math.max(0, t)));
+    };
+  }
+  const easeOut = bez(0.23, 1, 0.32, 1);      // animate skill: strong ease-out (entrances)
+  const easeInOut = bez(0.77, 0, 0.175, 1);   // animate skill: on-screen movement
+  const prog = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+
+  // ---------- text helpers ----------
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // {..} marks the bold, counting part; the last integer inside it counts up from 0.
+  function countable(s, key) {
+    const counts = (C.counts || []).includes(key) || (C.counts || []).includes(key.replace(/\.short$/, ""));
+    const wrapNum = (str) => {
+      if (!counts) return esc(str);
+      const m = str.match(/(\d[\d,.]*)(?!.*\d)/);
+      if (!m) return esc(str);
+      const i = m.index, n = parseFloat(m[1].replace(/,/g, ""));
+      return esc(str.slice(0, i)) + '<span class="cnt" data-to="' + n + '">' + esc(m[1]) + "</span>" + esc(str.slice(i + m[1].length));
+    };
+    if (s.includes("{")) return s.replace(/\{([^}]*)\}|([^{]+)/g, (all, b, p) => b !== undefined ? "<b>" + wrapNum(b) + "</b>" : esc(p));
+    return wrapNum(s);
+  }
+
+  // ---------- build DOM ----------
+  const bg = document.getElementById("bg");
+  bg.style.backgroundImage = "url('" + A.bg + "')";
+  const shade = document.getElementById("shade");
+  const side = C.dir === "rtl" ? "270deg" : "90deg";
+  shade.style.background = C.layout === "vertical"
+    ? "linear-gradient(180deg, rgba(7,6,11,0.92) 0%, rgba(7,6,11,0.55) 45%, rgba(7,6,11,0.75) 75%, rgba(7,6,11,0.96) 100%)"
+    : "linear-gradient(" + side + ", rgba(7,6,11,0.96) 0%, rgba(7,6,11,0.82) 45%, rgba(7,6,11,0.35) 100%), linear-gradient(180deg, rgba(7,6,11,0) 60%, rgba(7,6,11,0.9) 100%)";
+  const CAND = document.getElementById("candles");   // kept as a reference: rebuilds detach it
+  CAND.innerHTML = C.candlesSvg;
+  document.querySelector("#rocket img").src = A.rocket;
+
+  function el(cls, html, tag) { const e = document.createElement(tag || "div"); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  const parts = {};
+  function build() {
+    const content = document.getElementById("content");
+    content.innerHTML = "";
+    const stack = el("stack");
+    const logoRow = el("logoRow"); const logo = el("logo", null, "img"); logo.src = A.logo; logo.alt = C.brandName || ""; logoRow.appendChild(logo);
+    parts.logo = logoRow;
+    if (slots.has("badge")) parts.badge = el("badgeWrap", '<span class="badge">' + esc(txt("badge")) + "</span>");
+    parts.headline = el("headline", '<span class="h1">' + esc(tx["headline.1"]) + '</span><span class="h2">' + esc(tx["headline.2"]) + "</span>");
+    if (slots.has("sub")) parts.sub = el("sub", esc(txt("sub")));
+    const lev = slots.has("price") ? '<div class="lev">' + countable(txt("price2"), shortUsed.has("price2") ? "price2.short" : "price2") + "</div>" : "";
+    parts.price = el("price", '<div><span class="from">' + esc(tx["price.from"]) + '</span><span class="val">' + countable(tx["price.value"], "price.value") + "</span></div>" + lev);
+    const code = '<span class="code"><span class="k">' + esc(tx["code.label"]) + '</span><span class="v">' + esc(tx["code.value"]) + '</span><span class="off">' + countable(tx["code.off"], "code.off") + "</span></span>";
+    const cta = '<span class="cta"><span class="lbl">' + esc(tx["cta"]) + '</span><span class="ic">&#8594;</span><span class="shine"></span></span>';
+    if (slots.has("chip")) {
+      const s = txt("chip"), i = s.indexOf(" ");
+      parts.chip = el("chip", i > 0 ? "<b>" + esc(s.slice(0, i)) + "</b>" + esc(s.slice(i)) : esc(s));
+    }
+    const discKey = slots.has("disclaimer") ? "disclaimer" : "disclaimerShort";
+    parts.disc = el("disc", esc(tx[discKey]));
+    const cand = CAND;
+
+    if (C.layout === "vertical") {
+      parts.code = el("row", code);
+      parts.cta = el("ctaRow", cta);
+      const band = el("band"), left = el("left");
+      [parts.price, parts.code, parts.chip].forEach((p) => p && left.appendChild(p));
+      band.appendChild(left); band.appendChild(cand); parts.band = band;
+      [parts.logo, parts.badge, parts.headline, parts.sub, el("spacer"), band, parts.cta, parts.disc].forEach((p) => p && stack.appendChild(p));
+      const top = H * (C.safe ? C.safe.top : 0.14), bottom = H * (C.safe ? C.safe.bottom : 0.2);
+      stack.style.top = top + "px"; stack.style.bottom = bottom + "px";
+      parts.cta.querySelector(".cta").style.width = "100%";
+    } else {
+      parts.row = el("row", code + cta);
+      parts.code = parts.row; parts.cta = parts.row;
+      const seq = [parts.logo, parts.badge, parts.headline, parts.sub, parts.price, parts.row, parts.chip, el("spacer"), parts.disc];
+      seq.forEach((p) => p && stack.appendChild(p));
+      document.getElementById("frame").insertBefore(cand, document.getElementById("content"));
+    }
+    content.appendChild(stack);
+    parts.stack = stack; parts.cand = cand;
+  }
+
+  // Painted extent of an element: its text lines and pill-shaped children, not its block box.
+  function inkBox(e) {
+    const rects = [...e.querySelectorAll(".code, .cta, .lev, .badge")].map((k) => k.getBoundingClientRect());
+    const tw = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const rg = document.createRange(); rg.selectNodeContents(n); rects.push(...rg.getClientRects());
+    }
+    const b = { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity };
+    rects.forEach((r) => { if (!r.width) return; b.left = Math.min(b.left, r.left); b.right = Math.max(b.right, r.right); b.top = Math.min(b.top, r.top); b.bottom = Math.max(b.bottom, r.bottom); });
+    return b;
+  }
+
+  // Candles get the free column right of the text rows, bottom-aligned above the disclaimer.
+  const RATIO = 420 / 400, CMAX = 460;
+  function placeCandles() {
+    const c = parts.cand;
+    if (C.layout === "vertical") {
+      // right of the price block; may grow upward into the spacer
+      const left = parts.band.querySelector(".left").getBoundingClientRect();
+      const sp = parts.stack.querySelector(".spacer").getBoundingClientRect();
+      const availW = (parts.stack.getBoundingClientRect().width - left.width - X(40));
+      const availH = left.height + sp.height - X(10);
+      c.style.width = Math.max(X(200), Math.min(availW, availH / RATIO, X(520))) + "px";
+      return;
+    }
+    c.style.right = "auto";
+    const rtl = C.dir === "rtl";
+    // measure the painted content, not the full-width block boxes
+    const edgeOf = (list) => { const xs = list.filter(Boolean).map((e) => { const b = inkBox(e); return rtl ? b.left : b.right; }); return rtl ? Math.min(...xs) : Math.max(...xs); };
+    const discTop = parts.disc.getBoundingClientRect().top;
+    const hl = parts.headline.getBoundingClientRect();
+    const margin = C.layout === "wide" ? X(44) : X(56);
+    const widthFrom = (edge) => rtl ? edge - margin - X(36) : W - margin - edge - X(36);
+    let w, floor;
+    if (C.layout === "block") {
+      // two candidate slots, keep the bigger: (a) beside headline+sub+price from under the rocket,
+      // (b) under the headline, beside sub+price only. Both stand on the CTA row.
+      floor = parts.row.getBoundingClientRect().top - X(28);
+      const a = Math.min(widthFrom(edgeOf([parts.headline, parts.sub, parts.price])), (floor - X(230)) / RATIO);
+      const b = Math.min(widthFrom(edgeOf([parts.sub, parts.price])), (floor - hl.bottom - X(16)) / RATIO);
+      w = Math.min(Math.max(a, b), X(CMAX));
+    } else {
+      floor = discTop - X(24);
+      w = Math.min(widthFrom(edgeOf([parts.price, parts.row, parts.chip, parts.sub])), (floor - X(150)) / RATIO, X(CMAX));
+    }
+    w = Math.max(w, X(140));
+    c.style.width = w + "px";
+    c.style.top = (floor - w * RATIO) + "px";
+    c.style.left = (rtl ? margin : W - margin - w) + "px";
+  }
+
+  // ---------- overflow check (and fall back to short copy) ----------
+  function overflow() {
+    const bad = [];
+    const fr = document.getElementById("frame").getBoundingClientRect();
+    const s = parts.stack;
+    if (s.scrollHeight > s.clientHeight + 1) bad.push("stack-height");
+    // .cta is left out of the scrollWidth test: its shine sits outside it on purpose (in RTL that reads as overflow);
+    // the edge test below still catches a CTA that runs off the frame
+    s.querySelectorAll(".badge, .headline span, .row, .code, .cta, .chip, .price").forEach((e) => {
+      if (!e.classList.contains("cta") && e.scrollWidth > e.clientWidth + 1) bad.push("width:" + e.className);
+      const r = e.getBoundingClientRect();
+      if (r.right > fr.right - X(24) + 0.5 || r.left < fr.left + X(24) - 0.5) bad.push("edge:" + e.className);
+    });
+    // text column must not run under the candles in block/wide
+    if (C.layout !== "vertical") {
+      const cr = parts.cand.getBoundingClientRect();
+      [parts.headline, parts.sub, parts.price, parts.row].forEach((e) => {
+        if (!e) return; const r = inkBox(e);
+        const xo = Math.min(r.right, cr.right) - Math.max(r.left, cr.left), yo = Math.min(r.bottom, cr.bottom) - Math.max(r.top, cr.top);
+        if (xo > X(60) && yo > X(40)) bad.push("over-candles:" + e.className);
+      });
+    }
+    return bad;
+  }
+
+  // Shrink the headline to fit its line width (down to 70% of the layout's size) before touching copy.
+  let hsBase = null;
+  function fitHeadline() {
+    const cs = getComputedStyle(root);
+    if (hsBase === null) hsBase = parseFloat(getComputedStyle(document.body).getPropertyValue("--hs")) || 92;
+    const spans = parts.headline.querySelectorAll("span");
+    const avail = parts.headline.clientWidth;
+    let widest = 0; spans.forEach((sp) => { widest = Math.max(widest, sp.scrollWidth); });
+    if (widest > avail) {
+      const f = Math.max(0.7, (avail / widest) * 0.98);
+      parts.headline.style.setProperty("--hs", (hsBase * f).toFixed(1));
+      window.__hsScale = f;
+    }
+  }
+
+  function layout() {
+    build(); fitHeadline(); placeCandles();
+    let bad = overflow();
+    for (const k of (C.shortOrder || [])) {
+      if (!bad.length) break;
+      if (!tx[k + ".short"] && k !== "chip") continue;
+      shortUsed.add(k); build(); fitHeadline(); placeCandles(); bad = overflow();
+    }
+    window.__report = { overflow: bad, short: [...shortUsed], headlineScale: window.__hsScale ? +window.__hsScale.toFixed(2) : 1 };
+  }
+
+  // ---------- rocket path ----------
+  let P0, P1, P2;
+  function pathSetup() {
+    // vertical: land in the top band above the stack (decorative, may sit under the Stories UI) so it never covers the badge in RTL
+    const end = C.layout === "wide" ? [W - X(120), X(92)] : C.layout === "vertical" ? [W - X(170), H * (C.safe ? C.safe.top : 0.14) - X(40)] : [W - X(150), X(112)];
+    // same flight in every language (brief: bottom-left to top-right); the logo stays top-left in RTL too
+    P0 = [-X(160), H + X(120)];
+    P2 = end;
+    P1 = [W * 0.38, H * 0.62];
+    const tr = document.getElementById("trail");
+    tr.setAttribute("viewBox", "0 0 " + W + " " + H);
+    const d = "M" + P0 + " Q" + P1 + " " + P2;
+    tr.innerHTML = '<path id="tp" d="' + d + '" fill="none" stroke="url(#tg)" stroke-width="' + X(3) + '" stroke-linecap="round"/>' +
+      '<defs><linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="' + P0[0] + '" y1="' + P0[1] + '" x2="' + P2[0] + '" y2="' + P2[1] + '">' +
+      '<stop offset="0" style="stop-color:var(--accent-2)" stop-opacity="0"/><stop offset="0.6" style="stop-color:var(--accent)" stop-opacity="0.6"/><stop offset="1" stop-color="#E9E2F7" stop-opacity="0.9"/></linearGradient></defs>' +
+      [0, 1, 2].map((i) => '<line class="speed" id="sp' + i + '" stroke-width="' + X(2.5 - i * 0.6) + '"/>').join("");
+  }
+  const qb = (p, a, b, c) => (1 - p) * (1 - p) * a + 2 * (1 - p) * p * b + p * p * c;
+  const qd = (p, a, b, c) => 2 * (1 - p) * (b - a) + 2 * p * (c - b);
+
+  // ---------- timeline ----------
+  function fade(e, t, a, b, dy, scale) {
+    if (!e) return;
+    const p = easeOut(prog(t, a, b));
+    e.style.opacity = p;
+    e.style.transform = "translate3d(0," + ((1 - p) * X(dy || 24)) + "px,0)" + (scale ? " scale(" + (scale + (1 - scale) * p) + ")" : "");
+  }
+  function counts(t) {
+    document.querySelectorAll(".cnt").forEach((c, i) => {
+      const to = +c.dataset.to, a = 0.9 + i * 0.12, b = 2.4 + i * 0.1;
+      const v = Math.round(to * easeOut(prog(t, a, b)));
+      c.textContent = v.toLocaleString("en-US");
+    });
+  }
+  let tpLen = 0;
+  function seek(t) {
+    const pBg = easeOut(prog(t, 0, T));
+    bg.style.opacity = easeOut(prog(t, 0, 0.6));
+    bg.style.transform = "scale(" + (1.08 - 0.08 * pBg) + ")";
+    fade(parts.logo, t, 0.15, 0.8, 16);
+    fade(parts.badge, t, 0.3, 0.95, 18);
+    const hs = parts.headline.querySelectorAll("span");
+    fade(hs[0], t, 0.4, 1.15, 28); fade(hs[1], t, 0.5, 1.25, 28);
+    fade(parts.sub, t, 0.65, 1.35, 20);
+    fade(parts.price, t, 0.8, 1.45, 20);
+    fade(parts.code, t, 1.1, 1.75, 18);
+    if (parts.cta !== parts.code) fade(parts.cta, t, 1.2, 1.85, 18);
+    fade(parts.chip, t, 1.3, 1.95, 14);
+    if (parts.disc) parts.disc.style.opacity = easeOut(prog(t, 1.4, 2.1));
+    counts(t);
+    // candles rise in sequence, then the line draws
+    const cs = parts.cand.querySelectorAll("g.c");
+    cs.forEach((g, i) => {
+      const p = easeOut(prog(t, 1.0 + i * 0.08, 1.75 + i * 0.08));
+      g.style.opacity = p; g.style.transform = "translateY(" + ((1 - p) * 70) + "px)";
+    });
+    const line = parts.cand.querySelector("g.line");
+    if (line) {
+      const pl = parts.cand.querySelector("polyline");
+      const len = 560; pl.style.strokeDasharray = len; pl.style.strokeDashoffset = len * (1 - easeOut(prog(t, 1.5, 2.4)));
+      line.querySelectorAll("circle").forEach((c, i) => { c.style.opacity = easeOut(prog(t, 1.6 + i * 0.12, 2.0 + i * 0.12)); });
+    }
+    // rocket: bottom-left to top-right
+    const pr = easeInOut(prog(t, 0.6, 4.2));
+    const x = qb(pr, P0[0], P1[0], P2[0]), y = qb(pr, P0[1], P1[1], P2[1]);
+    let ang = Math.atan2(qd(pr, P0[1], P1[1], P2[1]), qd(pr, P0[0], P1[0], P2[0]));
+    const rk = document.getElementById("rocket");
+    rk.style.transform = "translate3d(" + x + "px," + y + "px,0) rotate(" + ang + "rad)";
+    const flight = Math.sin(Math.PI * Math.min(1, pr * 1.05));
+    const idle = t > 4.2 ? 0.55 + 0.06 * Math.sin(t * 31) : 0.55;
+    const tail = t < 0.6 ? 0.55 : Math.max(idle, 0.55 + 3.2 * flight);
+    document.getElementById("flame").style.width = X(C.layout === "wide" ? 90 : 120) + "px";
+    document.getElementById("flame").style.transform = "scaleX(" + tail + ")";
+    const tp = document.getElementById("tp");
+    if (!tpLen) tpLen = tp.getTotalLength();
+    tp.style.strokeDasharray = tpLen; tp.style.strokeDashoffset = tpLen * (1 - pr);
+    tp.style.opacity = t < 4.2 ? 0.55 : 0.55 - 0.43 * easeOut(prog(t, 4.2, 5.4));
+    [0, 1, 2].forEach((i) => {
+      const s = document.getElementById("sp" + i);
+      const back = X(260 + i * 90) * flight, off = X((i - 1) * 26);
+      const nx = -Math.sin(ang), ny = Math.cos(ang);
+      const x1 = x - Math.cos(ang) * X(110) + nx * off, y1 = y - Math.sin(ang) * X(110) + ny * off;
+      s.setAttribute("x1", x1); s.setAttribute("y1", y1);
+      s.setAttribute("x2", x1 - Math.cos(ang) * back); s.setAttribute("y2", y1 - Math.sin(ang) * back);
+      s.style.opacity = flight > 0.05 ? 0.7 * flight : 0;
+    });
+    // CTA shine once the rocket lands
+    const sh = document.querySelector(".cta .shine");
+    if (sh) sh.style.transform = "translateX(" + (-150 + 420 * easeOut(prog(t, 4.3, 5.3))) + "%)";
+  }
+
+  // ---------- run ----------
+  window.__seek = seek; window.__T = T;
+  const vars = C.vars || {};
+  Object.keys(vars).forEach((k) => root.style.setProperty("--" + k, vars[k]));
+  document.fonts.ready.then(() => {
+    layout(); pathSetup();
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const qs = new URLSearchParams(location.search), mode = qs.get("t");
+    // ?layer=bg|candles|rocket|text isolates one layer on a transparent page (video layers in Figma)
+    const LAYERS = { bg: ["bg", "shade"], candles: ["candles"], rocket: ["rocketWrap", "trail"], text: ["content"] };
+    const only = LAYERS[qs.get("layer")];
+    if (only) {
+      ["bg", "shade", "candles", "rocketWrap", "trail", "content"].forEach((id) => { if (!only.includes(id)) document.getElementById(id).style.visibility = "hidden"; });
+      if (!only.includes("bg")) { document.documentElement.style.background = "transparent"; document.body.style.background = "transparent"; document.getElementById("frame").style.background = "transparent"; }
+    }
+    if (mode !== null) { seek(parseFloat(mode)); window.__ready = true; return; }
+    if (C.autoplay === false || reduce) { seek(T); window.__ready = true; return; }
+    let t0 = null;
+    function tick(ts) { if (t0 === null) t0 = ts; const t = (ts - t0) / 1000; seek(Math.min(t, T)); if (t < T) requestAnimationFrame(tick); }
+    seek(0); window.__ready = true; requestAnimationFrame(tick);
+    window.addEventListener("message", (e) => { if (e.data === "replay") { t0 = null; requestAnimationFrame(tick); } if (e.data === "final") { t0 = -1e9; seek(T); } });
+  });
+})();
+</script>
+</body>
+</html>
