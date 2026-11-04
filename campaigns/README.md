@@ -1,7 +1,8 @@
 # campaigns/
 
 One folder per campaign, named by its short code (used in every frame and file name). Campaign
-folders are not committed: they hold client copy, facts and assets.
+folders are not committed, since they hold client copy, facts and assets, except `DEMO`, a
+working example with a fictional product. Copy it to start a new campaign.
 
 ```
 campaigns/<CODE>/
@@ -24,6 +25,7 @@ campaigns/<CODE>/
   "title": "SPRING25 · Spring launch",
   "brandName": "Example Co",
   "template": "templates/banner.html",
+  "langs": ["en", "de", "ar"],
   "theme": { "accent": "#3B82F6", "accent-2": "#22C55E", "accent-soft": "#BFDBFE" },
   "assets": {
     "logo": "assets/logo.svg",
@@ -41,6 +43,7 @@ campaigns/<CODE>/
   `--accent-deep`, `--bg`, `--ink`, `--soft`, `--muted`).
 - `rocket` is the sprite that flies across the banner; `candles` is an inline SVG whose
   `<g class="c">` groups rise in sequence and whose `<g class="line">` draws in.
+- `langs` (optional): languages this campaign is built in; defaults to all in `formats.json`.
 - `counts`: copy keys whose last number counts up from zero when the banner starts.
 - `shortOrder`: which slots switch to their `.short` copy, in this order, when a layout overflows.
 

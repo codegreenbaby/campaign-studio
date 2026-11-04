@@ -14,6 +14,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from common import figma_state
+
 ROOT = Path(__file__).resolve().parent.parent
 TOKEN_FILES = [ROOT / "secrets" / "figma-token.txt", Path.home() / ".figma-token"]
 STATE = ROOT / "state" / "figma.json"
@@ -30,7 +32,7 @@ def token():
 
 
 def file_key():
-    return json.loads(STATE.read_text(encoding="utf-8"))["fileKey"]
+    return figma_state()["fileKey"]
 
 
 def call(method, path, body=None):

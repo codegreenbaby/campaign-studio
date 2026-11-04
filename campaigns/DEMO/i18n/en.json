@@ -1,0 +1,20 @@
+{
+  "badge": "NEW · LUMEN TASKS 2.0",
+  "badge.short": "LUMEN TASKS",
+  "headline.1": "Plan the week.",
+  "headline.2": "Ship the week.",
+  "sub": "A task planner that turns every Monday plan into a Friday release.",
+  "sub.short": "Planning for busy teams.",
+  "price.from": "From",
+  "price.value": "$4",
+  "price2": "Up to {50} projects per team",
+  "price2.short": "{50} projects",
+  "code.label": "CODE",
+  "code.value": "LAUNCH20",
+  "code.off": "20% OFF",
+  "cta": "Start free trial",
+  "chip": "4.8 rating · used by 1,200 teams",
+  "chip.short": "4.8 rating",
+  "disclaimer": "Demo campaign for Campaign Studio. Lumen Tasks is a fictional product and every figure here is an example. 20% off with code LAUNCH20 on new annual plans. Terms apply.",
+  "disclaimerShort": "Fictional product. Example figures. Terms apply."
+}

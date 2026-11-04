@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 90" width="230" height="90">
+  <circle cx="40" cy="45" r="30" fill="#4F8BFF"/>
+  <path d="M28 46 l9 9 l17 -20" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="82" y="44" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF" letter-spacing="1">LUMEN</text>
+  <text x="83" y="72" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="20" font-weight="400" fill="#BFD3FF" letter-spacing="4">TASKS</text>
+</svg>

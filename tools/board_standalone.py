@@ -16,6 +16,8 @@ import json
 import sys
 from pathlib import Path
 
+from common import campaign_dir
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -29,15 +31,16 @@ def data_uri(p):
 
 
 def main(code):
-    cd = ROOT / "campaigns" / code
+    cd = campaign_dir(code)
     camp, formats = load(cd / "campaign.json"), load(ROOT / "formats.json")
     tpl = (ROOT / camp["template"]).read_text(encoding="utf-8")
-    texts = {l: {**load(cd / "i18n" / "en.json"), **load(cd / "i18n" / f"{l}.json")} for l in formats["langs"] if (cd / "i18n" / f"{l}.json").exists()}
+    langs = camp.get("langs") or formats["langs"]
+    texts = {l: {**load(cd / "i18n" / "en.json"), **load(cd / "i18n" / f"{l}.json")} for l in langs if (cd / "i18n" / f"{l}.json").exists()}
     assets = {k: data_uri(cd / v) for k, v in camp["assets"].items() if k != "candles"}
     data = {
         "code": code, "version": camp["version"], "tpl": tpl, "texts": texts, "assets": assets,
         "candlesSvg": (cd / camp["assets"]["candles"]).read_text(encoding="utf-8"),
-        "formats": formats["formats"], "langs": [l for l in formats["langs"] if l in texts],
+        "formats": formats["formats"], "langs": [l for l in langs if l in texts],
         "langLabel": formats["langLabel"], "rtl": formats["rtl"],
         "title": camp.get("title", code), "brandName": camp.get("brandName", ""), "theme": camp.get("theme", {}),
         "counts": camp.get("counts", []), "shortOrder": camp.get("shortOrder", []), "seconds": camp.get("seconds", 6),
@@ -170,4 +173,4 @@ matchMedia("(max-width: 640px)").addEventListener("change", sizeFrames);
 """
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1] if len(sys.argv) > 1 else None)

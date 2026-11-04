@@ -11,6 +11,8 @@ CLAUDE.local.md
 # campaign content and client data stay on the machine that made them
 campaigns/*
 !campaigns/README.md
+!campaigns/DEMO/
+campaigns/DEMO/dist/
 brand/*
 !brand/README.md
 glossary/*

@@ -13,6 +13,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from common import campaign_dir, fail
+
 ROOT = Path(__file__).resolve().parent.parent
 FFMPEG_FALLBACK = Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-9.0.2-full_build/bin/ffmpeg.exe"
 
@@ -35,14 +37,16 @@ def main():
     ap.add_argument("--layers", action="store_true", help="also export bg/candles/rocket/text layers (final frame) to dist/layers")
     a = ap.parse_args()
     from playwright.sync_api import sync_playwright
-    d = ROOT / "campaigns" / a.code / "dist"
+    d = campaign_dir(a.code) / "dist"
     banners = sorted(p for p in (d / "banners").glob("*.html") if a.match in p.name)
+    if not banners:
+        fail(f"no built banners match '{a.match}' in campaigns/{a.code}/dist/banners. Run tools/render.py {a.code} first.")
     (d / "png").mkdir(exist_ok=True)
     if a.video:
         (d / "mp4").mkdir(exist_ok=True)
         ff = ffmpeg_bin()
         if not ff:
-            raise SystemExit("ffmpeg not found")
+            fail("ffmpeg not found. Install it and put it on PATH (https://ffmpeg.org/download.html).")
     with sync_playwright() as p:
         b = p.chromium.launch()
         for f in banners:

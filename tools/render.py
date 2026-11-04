@@ -13,6 +13,8 @@ import json
 import sys
 from pathlib import Path
 
+from common import campaign_dir
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -25,7 +27,7 @@ def frame_name(fmt, code, kind, lang_label, ver):
 
 
 def build(code, langs, with_static_names=True):
-    camp_dir = ROOT / "campaigns" / code
+    camp_dir = campaign_dir(code)
     camp = load(camp_dir / "campaign.json")
     formats = load(ROOT / "formats.json")
     tpl = (ROOT / camp["template"]).read_text(encoding="utf-8")
@@ -34,7 +36,7 @@ def build(code, langs, with_static_names=True):
     out.mkdir(parents=True, exist_ok=True)
     candles_svg = (camp_dir / camp["assets"]["candles"]).read_text(encoding="utf-8")
     assets = {k: "../../" + v for k, v in camp["assets"].items() if k != "candles"}
-    langs = langs or formats["langs"]
+    langs = langs or camp.get("langs") or formats["langs"]
     rows = []
     missing = {}
     for lang in langs:

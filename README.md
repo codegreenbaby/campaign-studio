@@ -16,6 +16,7 @@ the same board in Figma. Feedback comes back as Figma comments, and the agent ap
 ## Contents
 
 - [What it produces](#what-it-produces)
+- [Quick start](#quick-start)
 - [How the agent works](#how-the-agent-works)
 - [Architecture](#architecture)
 - [The banner template](#the-banner-template)
@@ -42,6 +43,23 @@ For one campaign with the default `formats.json` (6 formats × 11 languages):
 Default formats: 1080×1080, 1080×1350, 1080×1920 (Meta feed and Stories) and 1200×1200,
 960×1200, 1200×628 (Google Performance Max). Frames are named
 `{CODE}_{W}x{H}_{Static|Video}_{LANG}_v{N}`.
+
+## Quick start
+
+The repository ships a demo campaign (`campaigns/DEMO`, a fictional app, three languages) so you
+can see the whole pipeline before writing a brief.
+
+```bash
+python -m venv .venv
+.venv/Scripts/python -m pip install playwright pillow      # macOS/Linux: .venv/bin/python
+.venv/Scripts/python -m playwright install chromium
+.venv/Scripts/python tools/render.py DEMO --check           # 18 banners, fails on overflow
+.venv/Scripts/python tools/export.py DEMO --sheet           # PNGs + one contact sheet per language
+.venv/Scripts/python tools/board_standalone.py DEMO         # campaigns/DEMO/dist/DEMO-board.html
+```
+
+Open `campaigns/DEMO/dist/DEMO-board.html` in a browser to watch every banner animate.
+With ffmpeg on PATH, `tools/export.py DEMO --video` renders the MP4s. Figma needs the setup below.
 
 ## How the agent works
 
@@ -239,12 +257,13 @@ templates/banner.html       the banner template
 tools/                      render, export, board, Figma patch, bridge, comments, duotone
 plugin/                     Figma development plugin + strict API stub tests
 .claude/skills/             campaign-build, localize, figma-comments-loop
-campaigns/README.md         campaign folder format (campaign folders themselves stay local)
+campaigns/README.md         campaign folder format
+campaigns/DEMO/             demo campaign (other campaign folders stay local)
 brand/README.md             brand folder format (local)
 glossary/README.md          glossary format (local)
 ```
 
-Not committed: `campaigns/*`, `brand/*`, `glossary/*`, `state/`, `secrets/`, `CLAUDE.local.md`,
+Not committed: `campaigns/*` (except `DEMO`), `brand/*`, `glossary/*`, `state/`, `secrets/`, `CLAUDE.local.md`,
 third-party skills.
 
 ## Design decisions and limits
@@ -297,6 +316,14 @@ third-party skills.
 Форматы по умолчанию: 1080×1080, 1080×1350, 1080×1920 (лента и Stories Meta) и 1200×1200,
 960×1200, 1200×628 (Google Performance Max). Имена фреймов:
 `{CODE}_{W}x{H}_{Static|Video}_{LANG}_v{N}`.
+
+## Быстрый старт
+
+В репозитории есть демо-кампания (`campaigns/DEMO`, выдуманное приложение, три языка), чтобы
+увидеть весь конвейер до того, как писать бриф. Команды — в английском разделе Quick start.
+После них откройте `campaigns/DEMO/dist/DEMO-board.html` в браузере: все баннеры проигрывают
+анимацию. С ffmpeg в PATH `tools/export.py DEMO --video` рендерит MP4. Для Figma нужна настройка
+из раздела «Требования и установка».
 
 ## Как работает агент
 
@@ -428,12 +455,13 @@ templates/banner.html       шаблон баннера
 tools/                      рендер, экспорт, полотно, патч Figma, мост, комментарии, duotone
 plugin/                     плагин Figma + строгие тесты на заглушке API
 .claude/skills/             campaign-build, localize, figma-comments-loop
-campaigns/README.md         формат папки кампании (сами кампании остаются локально)
+campaigns/README.md         формат папки кампании
+campaigns/DEMO/             демо-кампания (остальные кампании остаются локально)
 brand/README.md             формат папки бренда (локально)
 glossary/README.md          формат глоссария (локально)
 ```
 
-Не коммитятся: `campaigns/*`, `brand/*`, `glossary/*`, `state/`, `secrets/`, `CLAUDE.local.md`,
+Не коммитятся: `campaigns/*` (кроме `DEMO`), `brand/*`, `glossary/*`, `state/`, `secrets/`, `CLAUDE.local.md`,
 сторонние скиллы.
 
 ## Решения и ограничения

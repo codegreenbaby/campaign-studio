@@ -21,6 +21,8 @@ from pathlib import Path
 
 from PIL import Image
 
+from common import campaign_dir, fail, figma_state
+
 ROOT = Path(__file__).resolve().parent.parent
 LABEL_H, LABEL_GAP, COL_GAP, ROW_GAP, ROW_TITLE = 40, 24, 120, 280, 90
 LAYERS = ["bg", "candles", "rocket", "text"]
@@ -47,9 +49,12 @@ def rel(p):
 
 
 def build(code):
-    camp = load(ROOT / "campaigns" / code / "campaign.json")
+    cdir = campaign_dir(code)
+    camp = load(cdir / "campaign.json")
     formats = load(ROOT / "formats.json")
-    state = load(ROOT / "state" / "figma.json")
+    state = figma_state()
+    if not any((cdir / "dist" / "png").glob("*.png")):
+        fail(f"no PNGs in campaigns/{code}/dist/png. Run tools/render.py {code} and tools/export.py {code} first.")
     d = ROOT / "campaigns" / code / "dist"
     jpg_dir = d / "figma"; jpg_dir.mkdir(exist_ok=True)
     ver = camp["version"]
@@ -130,8 +135,10 @@ def build(code):
 
 
 def cleanup_legacy(code):
-    state = load(ROOT / "state" / "figma.json")
-    leg = state["legacy"]
+    state = figma_state()
+    leg = state.get("legacy")
+    if not leg:
+        fail('state/figma.json has no "legacy" entry: nothing to clean up.')
     patch = {"id": f"{code}-cleanup-legacy", "file": leg["file"], "page": leg["page"],
              "ops": [{"op": "removeByPrefix", "prefix": f"{code} — "}]}
     (ROOT / "state" / "patch.json").write_text(json.dumps(patch, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -139,9 +146,11 @@ def cleanup_legacy(code):
 
 
 def record(code):
+    if not (ROOT / "state" / "patch-result.json").exists():
+        fail("state/patch-result.json is missing: run the plugin first.")
     res = load(ROOT / "state" / "patch-result.json")
     patch = load(ROOT / "state" / "patch.json")
-    state = load(ROOT / "state" / "figma.json")
+    state = figma_state()
     c = state["campaigns"].setdefault(code, {})
     c["pages"], c["frames"], c["bySection"] = {}, {}, {}
     applied = {item["i"]: item for item in res["applied"]}

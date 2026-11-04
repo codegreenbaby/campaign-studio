@@ -1,0 +1,38 @@
+{
+  "code": "DEMO",
+  "version": 1,
+  "title": "DEMO · Lumen Tasks launch",
+  "brandName": "Lumen Tasks",
+  "template": "templates/banner.html",
+  "langs": [
+    "en",
+    "de",
+    "ar"
+  ],
+  "theme": {
+    "accent": "#4F8BFF",
+    "accent-2": "#34D399",
+    "accent-soft": "#BFD3FF",
+    "accent-deep": "#2B5BD7",
+    "bg": "#070914"
+  },
+  "assets": {
+    "logo": "assets/logo.svg",
+    "bg": "assets/background.jpg",
+    "rocket": "assets/sprite.svg",
+    "candles": "assets/chart.svg"
+  },
+  "counts": [
+    "price.value",
+    "price2",
+    "price2.short",
+    "code.off"
+  ],
+  "shortOrder": [
+    "sub",
+    "chip",
+    "price2",
+    "badge"
+  ],
+  "seconds": 6
+}
