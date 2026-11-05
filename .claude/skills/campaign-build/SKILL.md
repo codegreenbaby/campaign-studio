@@ -77,10 +77,12 @@ go to the `video layers` page as separate frames.
 
 ## 9. Comments
 
-`figma-comments-loop`, with this mapping: a comment on a frame on the `Formats` page changes that
-language and format only (override in `i18n/<lang>.json` or a per-format override); a comment
-on the `Master visuals` page changes the template or the EN copy and is rebuilt into all 66. Rebuild,
-re-export, patch Figma, reply in the thread with what changed and where.
+`figma-comments-loop`. The scope of a change follows where its source lives, not which frame
+carries the comment: a copy edit on a `Formats` frame goes to `i18n/<lang>.json` and reaches every
+format of that language; a layout edit goes to that size's entry in `formats.json` and reaches that
+size in every language; a design change goes to the template and reaches all banners, as does
+any comment on the `Master visuals` page. There is no single-banner override. Rebuild, re-export,
+patch Figma, reply in the thread with what changed and in which banners.
 
 ## Report
 

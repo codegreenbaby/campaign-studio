@@ -27,11 +27,22 @@ with the scope "File comments: read and write".
 Each thread carries `node_id` and `node_offset`. Look the node up in `state/figma.json`
 (`campaigns.<CODE>.bySection`):
 
-| Page | Node is | Scope of the change |
+| Page | Node is | Tells you |
 |---|---|---|
-| `Formats` | one banner (`<CODE>_<W>x<H>_Static_<LANG>_v<N>`) | that language and format only |
-| `Master visuals` | an EN master banner | template or EN copy, rebuilt into every banner |
+| `Formats` | one banner (`<CODE>_<W>x<H>_Static_<LANG>_v<N>`) | which language and size the user was looking at |
+| `Master visuals` | an EN master banner | a change meant for the whole campaign |
 | `video layers` | one layer of one format | motion or that layer's asset |
+
+The scope of the edit follows where its source lives (step 4), not the frame:
+
+| Kind of request | Source | Reaches |
+|---|---|---|
+| Copy ("change this word") | `i18n/<lang>.json` | every format of that language |
+| Layout of one size (type size, spacing, chart position) | that size in `formats.json` (`vars`) | that size in every language |
+| Design (colour, asset, motion, structure) | `templates/banner.html`, `campaign.json` theme, `assets/` | every banner |
+| Anything on `Master visuals` | template or `en.json` | every banner (EN copy flows into other languages only through their own files) |
+
+There is no single-banner override. Say in the reply which banners changed.
 
 A node that is not in the map belongs to something else in the file: leave it alone.
 
@@ -43,9 +54,12 @@ not apply it: reply with the conflict and a compliant alternative.
 
 ## 4. Edit
 
-- Copy: `campaigns/<CODE>/i18n/<lang>.json`. A one-banner change that must not spread gets a
-  per-format override instead of a new key for everyone.
-- Visual or layout: `templates/banner.html` or the campaign's `assets/`.
+- Copy: `campaigns/<CODE>/i18n/<lang>.json` (every format of that language). A copy change on an
+  EN master that should reach other languages needs the matching edit in each language file.
+- Layout of one size: that format's `vars` in `formats.json` (that size in every language). After
+  the change, `--check` must stay clean in every language: a bigger headline is fine for EN and
+  may overflow in DE.
+- Design: `templates/banner.html`, the campaign's `theme` in `campaign.json`, or `assets/`.
 - Motion: the timeline in `templates/banner.html` (`seek()`); the last frame must still equal the
   static banner.
 
